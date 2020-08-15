@@ -8,7 +8,7 @@ const fs = require("fs");
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-// const render = require("./lib/htmlRenderer");
+const render = require("./lib/htmlRenderer");
 
 const typeQuestion = [
     {
@@ -74,11 +74,13 @@ function getQuestions(typeAnswer){
     init();
 }
 
+let employees = [];
+
 async function init(){
     try{
         const typeAnswer = await inquirer.prompt(typeQuestion);
         if(typeAnswer.employee === "I dont want to add another employee"){
-            // render();
+            render(employees);
             return
         } else{
             const choice = await getQuestions(typeAnswer);
@@ -88,7 +90,9 @@ async function init(){
                 ...generalAnswers,
                 ...employeeAnswer
             };
-            console.log(employeeDetails);
+            employees.push(employeeDetails);
+            console.log(employees);
+            init()
             // .map the employees informatin into a new array
         }
 
