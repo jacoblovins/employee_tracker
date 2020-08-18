@@ -1,6 +1,7 @@
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
+const questions = require("./lib/questions");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
@@ -10,67 +11,15 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-const typeQuestion = [
-    {
-        type: "list",
-        message: "What type of employee:",
-        name: "employee",
-        choices: ["Manager", "Engineer", "Intern", "I dont want to add another employee"]
-    }
-]
-
-const generalQuestions = [
-    {
-        type: "input",
-        message: "Employee name:",
-        name: "name"
-    },
-    {
-        type: "input",
-        message: "Employee ID:",
-        name: "id"
-    },
-    {
-        type: "input",
-        message: "Employee Email:",
-        name: "email"
-    },
-]
-
-const managerQuestion = [
-    {
-        type: "input",
-        message: "Office Phone number:",
-        name: "number"
-    }
-]
-
-const engineerQuestion = [
-    {
-        type: "input",
-        message: "GitHub Link:",
-        name: "github"
-    }
-]
-
-const internQuestion = [
-    {
-        type: "input",
-        message: "School:",
-        name: "school"
-    }
-]
-
 function getQuestions(typeAnswer){
 
     if(typeAnswer.employee === "Manager"){
-        return managerQuestion;
+        return questions.managerQuestion;
     } else if(typeAnswer.employee === "Engineer") {
-        return engineerQuestion;
+        return questions.engineerQuestion;
     } else if(typeAnswer.employee === "Intern"){
-        return internQuestion;
+        return questions.internQuestion;
     }
-    init();
 }
 
 let employees = [];
@@ -78,7 +27,7 @@ let person;
 
 async function init(){
     try{
-        const typeAnswer = await inquirer.prompt(typeQuestion);
+        const typeAnswer = await inquirer.prompt(questions.typeQuestion);
         if(typeAnswer.employee === "I dont want to add another employee"){
             
             fs.writeFile(outputPath, render(employees), function(err) {
@@ -91,7 +40,7 @@ async function init(){
             return
         } else{
             const choice = await getQuestions(typeAnswer);
-            const generalAnswers = await inquirer.prompt(generalQuestions);
+            const generalAnswers = await inquirer.prompt(questions.generalQuestions);
             const employeeAnswer = await inquirer.prompt(choice);
 
             if(typeAnswer.employee === "Manager"){
@@ -103,7 +52,6 @@ async function init(){
             } 
 
             employees.push(person);
-            console.log(employees);
             init()
         }
 
