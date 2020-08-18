@@ -75,25 +75,37 @@ function getQuestions(typeAnswer){
 }
 
 let employees = [];
+let person;
 
 async function init(){
     try{
         const typeAnswer = await inquirer.prompt(typeQuestion);
         if(typeAnswer.employee === "I dont want to add another employee"){
-            render(employees);
+            
+            fs.writeFile(outputPath, render(employees), function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+                console.log("The file was saved!");
+            }); 
+            
             return
         } else{
             const choice = await getQuestions(typeAnswer);
             const generalAnswers = await inquirer.prompt(generalQuestions);
             const employeeAnswer = await inquirer.prompt(choice);
-            let employeeDetails = {
-                ...generalAnswers,
-                ...employeeAnswer
-            };
-            employees.push(employeeDetails);
+
+            if(typeAnswer.employee === "Manager"){
+                person = new Manager(generalAnswers.name, generalAnswers.id, generalAnswers.email, employeeAnswer.number)
+            } else if(typeAnswer.employee === "Engineer"){
+                person = new Engineer(generalAnswers.name, generalAnswers.id, generalAnswers.email, employeeAnswer.github)
+            } else if(typeAnswer.employee === "Intern"){
+                person = new Intern(generalAnswers.name, generalAnswers.id, generalAnswers.email, employeeAnswer.school)
+            } 
+
+            employees.push(person);
             console.log(employees);
             init()
-            // .map the employees informatin into a new array
         }
 
     } catch (error) {
