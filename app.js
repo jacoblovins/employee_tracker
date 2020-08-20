@@ -51,13 +51,11 @@ async function otheremployees() {
                 }
                 console.log("The file was saved!");
             });
-
             return
         } 
     } catch (error) {
         console.log(error);
     }
 }
-
 init();
 
